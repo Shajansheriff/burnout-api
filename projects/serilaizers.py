@@ -5,7 +5,8 @@ from projects.models import Project, ProjectTimeline
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ('id', 'name', 'cost_per_hour', 'completed', 'created_at', 'client', 'start_date', 'end_date')
+        fields = ('id', 'name', 'cost_per_hour', 'completed', 'created_at',
+                  'client', 'start_date', 'end_date', 'expense', 'total_hours_spent' )
 
 
 class ProjectTimelineSerializer(serializers.ModelSerializer):

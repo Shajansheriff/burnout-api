@@ -3,8 +3,7 @@ from clients.models import Client
 from projects.models import Project, ProjectTimeline
 from projects.serilaizers import ProjectSerializer, ProjectTimelineSerializer
 from django.http import Http404
-from rest_framework.views import APIView
-from rest_framework import viewsets, generics, status
+from rest_framework import viewsets, generics
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -29,6 +28,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
 
 class ClientProjectList(generics.ListAPIView):
+    """
+    return the list of projects of a client
+    """
     model = Project
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
@@ -38,7 +40,23 @@ class ClientProjectList(generics.ListAPIView):
         return queryset.filter(client=self.kwargs.get('client'))
 
 
+class ClientProjectDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    UPDATE, DELETE Project of a client
+    """
+    model = Project
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        queryset = super(ClientProjectDetail, self).get_queryset()
+        return queryset.filter(client=self.kwargs.get('client'))
+
+
 class ProjectTimelineList(generics.ListAPIView):
+    """
+    List ProjectTimeline
+    """
     model = Project
     queryset = ProjectTimeline.objects.all()
     serializer_class = ProjectTimelineSerializer
