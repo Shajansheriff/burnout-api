@@ -7,6 +7,8 @@ class Client(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
     email = models.EmailField(max_length=64, blank=False, null=False)
     address = models.CharField(max_length=255, blank=True)
+    company_name = models.CharField(max_length=255, blank=True, null=True)
+    total_income = models.FloatField(blank=True, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

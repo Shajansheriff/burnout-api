@@ -10,7 +10,7 @@ class Project(models.Model):
     name = models.CharField(max_length=255)
     client = models.ForeignKey(Client)
     cost_per_hour = models.FloatField(blank=False, default=1)
-    # expense is cost_per_hour * hour_spents
+    # expense is cost_per_hour * hour_spent
     expense = models.FloatField(blank=True, null=True, default=0)
     start_date = models.DateField(blank=True, null=True)
     expected_end_date = models.DateField(blank=True, null=True)
@@ -24,16 +24,27 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        super(Project, self).save()
+        projects = Project.objects.filter(client=self.client)
+        total_income = 0
+        for project in projects:
+            total_income += project.expense
+
+        self.client.total_income = total_income
+        self.client.save()
+
 
 class ProjectTimeline(models.Model):
     project = models.ForeignKey(Project)
-    time_spent = models.IntegerField(blank=False, null=False, max_length=2,
+    time_spent = models.IntegerField(blank=False, null=False,
                                      validators=[
                                          MaxValueValidator(24),
-                                         MinValueValidator(0)
+                                         MinValueValidator(1)
                                      ])
     # By Default it'll take spent on as current date
-    spent_on = models.DateField(blank=True, null=True, default=datetime.date.today())
+    spent_on = models.DateField(blank=False, null=False, default=datetime.date.today())
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
